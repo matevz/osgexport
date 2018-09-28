@@ -628,11 +628,10 @@ class StateTextureAttribute(StateAttribute):
     def serializeContent(self, output):
         StateAttribute.serializeContent(self, output)
 
-class Lod(Object):
+class Lod(Group):
     def __init__(self, *args, **kwargs):
-        Object.__init__(self, *args, **kwargs)
+        Group.__init__(self, *args, **kwargs)
         self.generateID()
-        self.lod_objects = []
         self.range_list = RangeList()
 
     def className(self):
@@ -644,17 +643,12 @@ class Lod(Object):
     def serialize(self, output):
         output.write(self.encode("$%s {\n" % self.getNameSpaceClass()))
         Object.serializeContent(self, output)
+        Group.serializeContent(self, output)
         self.serializeContent(output)
         output.write(self.encode("$}\n"))
 
     def serializeContent(self, output):
-        output.write(self.encode("$#Children %d {\n" % len(self.lod_objects)))
-        for o in self.lod_objects:
-            o.indent_level = self.indent_level + 2
-            o.write(output)
-        output.write(self.encode("$#}\n"))
-
-        self.range_list.indent_level = self.indent_level + 2
+        self.range_list.indent_level = self.indent_level
         self.range_list.write(output)
 
 class RangeList(Object):
@@ -673,7 +667,7 @@ class RangeList(Object):
 
     def serializeContent(self, output):
         for r in self.range_lists:
-            output.write(self.encode("$#%d %d\n" % (r[0],r[1])))
+            output.write(self.encode("$#%f %f\n" % (r[0],r[1])))
 
 class Light(StateAttribute):
     def __init__(self, *args, **kwargs):

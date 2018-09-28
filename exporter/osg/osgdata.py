@@ -378,6 +378,22 @@ class Export(object):
                 if blender_object.type == "MESH":
                     osg_geode = self.createGeodeFromObject(blender_object)
                     osg_object.children.append(osg_geode)
+
+                    if self.config.export_lod and len(blender_object.lod_levels)>0:
+                        Log("Exportin LOD...")
+                        osg_lod = Lod()
+                        osg_lod.children.append(osg_object)
+
+                        distances = [ 0.0 ]
+                        for l in blender_object.lod_levels[1:]:
+                            osg_lod.children.append(parseBlenderObject(l.object, True))
+                            distances.append(l.distance)
+
+                        distances.append(10000.0) # maximum visible distance
+                        for i in range(0,len(distances)-1):
+                            osg_lod.range_list.range_lists.append( (distances[i], distances[i+1]) )
+
+                        osg_object = osg_lod
                 else:
                     self.evaluateGroup(blender_object, osg_object, osg_root)
             return osg_object
