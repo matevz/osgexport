@@ -648,7 +648,7 @@ class Lod(Group):
         output.write(self.encode("$}\n"))
 
     def serializeContent(self, output):
-        self.range_list.indent_level = self.indent_level
+        self.range_list.indent_level = self.indent_level+1
         self.range_list.write(output)
 
 class RangeList(Object):
@@ -660,7 +660,7 @@ class RangeList(Object):
         return "RangeList"
 
     def serialize(self, output):
-        output.write(self.encode("$%s %d {\n" % (self.getNameSpaceClass(), len(self.range_lists))))
+        output.write(self.encode("$RangeList %d {\n" % (len(self.range_lists))))
         Object.serializeContent(self, output)
         self.serializeContent(output)
         output.write(self.encode("$}\n"))
