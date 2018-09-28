@@ -628,6 +628,52 @@ class StateTextureAttribute(StateAttribute):
     def serializeContent(self, output):
         StateAttribute.serializeContent(self, output)
 
+class Lod(Object):
+    def __init__(self, *args, **kwargs):
+        Object.__init__(self, *args, **kwargs)
+        self.generateID()
+        self.lod_objects = []
+        self.range_list = RangeList()
+
+    def className(self):
+        return "LOD"
+
+    def nameSpace(self):
+        return "osg"
+
+    def serialize(self, output):
+        output.write(self.encode("$%s {\n" % self.getNameSpaceClass()))
+        Object.serializeContent(self, output)
+        self.serializeContent(output)
+        output.write(self.encode("$}\n"))
+
+    def serializeContent(self, output):
+        output.write(self.encode("$#Children %d {\n" % len(self.lod_objects)))
+        for o in self.lod_objects:
+            o.indent_level = self.indent_level + 2
+            o.write(output)
+        output.write(self.encode("$#}\n"))
+
+        self.range_list.indent_level = self.indent_level + 2
+        self.range_list.write(output)
+
+class RangeList(Object):
+    def __init__(self, *args, **kwargs):
+        Object.__init__(self, *args, **kwargs)
+        self.range_lists = []
+
+    def className(self):
+        return "RangeList"
+
+    def serialize(self, output):
+        output.write(self.encode("$%s %d {\n" % (self.getNameSpaceClass(), len(self.range_lists))))
+        Object.serializeContent(self, output)
+        self.serializeContent(output)
+        output.write(self.encode("$}\n"))
+
+    def serializeContent(self, output):
+        for r in self.range_lists:
+            output.write(self.encode("$#%d %d\n" % (r[0],r[1])))
 
 class Light(StateAttribute):
     def __init__(self, *args, **kwargs):
