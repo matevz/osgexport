@@ -55,6 +55,7 @@ class Config(object):
         self.defaultattr("texture_prefix", "textures")
         self.defaultattr("only_visible", True)
         self.defaultattr("export_anim", True)
+        self.defaultattr("export_lod", True)
         self.defaultattr("object_selected", None)
 
         self.defaultattr("zero_translations", False)
