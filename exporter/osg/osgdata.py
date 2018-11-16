@@ -380,7 +380,7 @@ class Export(object):
                     osg_object.children.append(osg_geode)
 
                     if self.config.export_lod and len(blender_object.lod_levels)>0:
-                        Log("Exportin LOD...")
+                        Log("Exporting LOD...")
                         osg_lod = Lod()
                         osg_lod.children.append(osg_object)
 
