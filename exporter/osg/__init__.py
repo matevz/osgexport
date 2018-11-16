@@ -84,8 +84,10 @@ def main():
                         help="Save the generated file to the specified path")
     parser.add_argument("-a", "--enable-animation", dest="enable_animation", action="store_true", default=False,
                         help="Enable saving of animations")
-    parser.add_argument("-d", "--enable-level-of-detail", dest="enable_lod", action="store_true", default=True,
+    parser.add_argument("-L", "--enable-level-of-detail", dest="enable_lod", action="store_true", default=True,
                         help="Export levels of detail")
+    parser.add_argument("-d", "--max-lod-distance", dest="max_lod_distance", action="store_true", default=True,
+                        help="Maximum LOD distance")
     parser.add_argument("-b", "--bake-all", dest="bake_all", action="store_true", default=False,
                         help="Force animation baking")
     parser.add_argument("-q", "--bake-quaternions", dest="use_quaternions", action="store_true", default=False,
@@ -188,6 +190,9 @@ class OSGGUI(bpy.types.Operator, ExportHelper):
                               default=True)
     EXPORTLOD = BoolProperty(name="Export LOD", description="Export Levels of Detail yes/no",
                               default=True)
+    MAXLODDISTANCE = FloatProperty(name="Maximum LOD distance",
+                          description="Maximum distance before the model disappears enitrely (in model units)",
+                          default=10000.0)
     APPLYMODIFIERS = BoolProperty(name="Apply Modifiers", description="Apply modifiers before exporting yes/no",
                                   default=True)
     LOG = BoolProperty(name="Write log", description="Write log file yes/no", default=False)
@@ -225,6 +230,7 @@ class OSGGUI(bpy.types.Operator, ExportHelper):
         layout.row(align=True).prop(self, "ONLY_VISIBLE")
         layout.row(align=True).prop(self, "EXPORTANIM")
         layout.row(align=True).prop(self, "EXPORTLOD")
+        layout.row(align=True).prop(self, "MAXLODDISTANCE")
         layout.row(align=True).prop(self, "EXPORT_ALL_SCENES")
         layout.row(align=True).prop(self, "APPLYMODIFIERS")
         layout.row(align=True).prop(self, "BAKE_ALL")
@@ -271,6 +277,7 @@ class OSGGUI(bpy.types.Operator, ExportHelper):
 
         self.EXPORTANIM = self.config.export_anim
         self.EXPORTLOD = self.config.export_lod
+        self.MAXLODDISTANCE = self.config.max_lod_distance
         self.APPLYMODIFIERS = self.config.apply_modifiers
         self.ZERO_TRANSLATIONS = self.config.zero_translations
         self.LOG = self.config.log
@@ -314,6 +321,7 @@ class OSGGUI(bpy.types.Operator, ExportHelper):
         self.config.anim_fps = self.ANIMFPS
         self.config.export_anim = self.EXPORTANIM
         self.config.export_lod = self.EXPORTLOD
+        self.config.max_lod_distance = self.MAXLODDISTANCE
         self.config.apply_modifiers = self.APPLYMODIFIERS
         self.config.log = self.LOG
         self.config.zero_translations = self.ZERO_TRANSLATIONS

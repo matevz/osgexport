@@ -56,6 +56,7 @@ class Config(object):
         self.defaultattr("only_visible", True)
         self.defaultattr("export_anim", True)
         self.defaultattr("export_lod", True)
+        self.defaultattr("max_lod_distance", float(10000.0))
         self.defaultattr("object_selected", None)
 
         self.defaultattr("zero_translations", False)

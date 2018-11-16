@@ -389,7 +389,7 @@ class Export(object):
                             osg_lod.children.append(parseBlenderObject(l.object, True))
                             distances.append(l.distance)
 
-                        distances.append(10000.0) # maximum visible distance
+                        distances.append( self.config.max_lod_distance ) # maximum visible distance
                         for i in range(0,len(distances)-1):
                             osg_lod.range_list.range_lists.append( (distances[i], distances[i+1]) )
 
